@@ -78,36 +78,11 @@ class Board
             row -= 1
         end
         puts "    ---------------------------------"
-        puts "      1   2   3   4   5   6   7   8"
-    end
-
-    def move_piece(x,y)
-        selection = @board[x - 1][y - 1]
-        if selection.class != String
-            puts "You've selected: #{selection.symbol}"
-            possible_moves = selection.movelist
-            puts "Possible Moves!"
-            puts "-----------"
-            possible_moves.each do |move|
-                move[0] += x
-                move[1] += y
-                if @board[move[0]][move[1]].class == String
-                    @board[move[0]][move[1]] = 'X'
-                end
-                puts "(#{move.join(', ')})"
-            end
-            puts "-----------"
-
-        else
-            puts "You've selected: #{selection}, select again."
-        end
-        
+        puts "      A   B   C   D   E   F   G   H"
     end
 
 end
 
 board = Board.new
 board.setup
-board.show_board
-board.move_piece(2,2)
 board.show_board

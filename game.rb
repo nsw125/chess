@@ -42,22 +42,6 @@ class Game
     end
 
     def player_turn(currently_playing)
-
-        puts "Choose a piece to move (x,y)"
-        selection = gets.chomp.downcase
-        until selection.length == 3 and selection =~ /[1-8],[1-8]/ or selection == 'exit'
-            puts "That is not a valid option. Choose two numbers."
-            selection = gets.chomp.downcase
-        end
-        if selection == 'exit'
-            exit
-        end
-        puts "Your Selection (#{selection}) is valid!"
-        selection = selection.split(',')
-        selection[0] = selection[0].to_i - 1
-        selection[1] = selection[1].to_i - 1
-        puts selection
-        @board.move_piece(selection[0],selection[1])
         
     end
 
