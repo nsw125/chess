@@ -1,100 +1,180 @@
 class Pawn
-    attr_reader :symbol, :movelist
-    def initialize(player)
+    attr_reader :symbol, :movelist, :color
+    attr_accessor :location
+    def initialize(color)
         
-        if player == 1
-            @symbol = "\u2659"
-            @color = 'white'
-        elsif player == 2
+        if color == 'white'
             @symbol = "\u265f"
-            @color = 'black'
+        elsif color == 'black'
+            @symbol = "\u2659"
         end
-        @movelist = [[0,1],[0,2]]
+        @color = color
+        @moved = false
+    end
+
+    def set_location(x,y)
+        @location = [x,y]
+    end
+
+    def movelist
+        if @color == 'white'
+            if @moved == false
+                moves = [[0,1],[0,2]]
+            else
+                moves = [[0,1]]
+            end
+        else
+            if @moved == false
+                moves = [[0,-1],[0,-2]]
+            else
+                moves = [[0,-1]]
+            end
+        end
     end
 
     def has_moved
-        @movelist = [0,1]
+        @moved = true
     end
 end
 
 class Rook
 
-    attr_reader :symbol, :movelist
-    def initialize(player)
+    attr_reader :symbol, :movelist, :color
+    attr_accessor :location
+    def initialize(color)
         
-        if player == 1
-            @symbol = "\u2656"
-            @color = 'white'
-        elsif player == 2
+        if color == 'white'
             @symbol = "\u265c"
-            @color = 'black'
+        elsif color == 'black'
+            @symbol = "\u2656"
         end
+        @color = color
         
+    end
+
+    def set_location(x,y)
+        @location = [x,y]
+    end
+
+    def movelist
+
     end
 
 end
 
 class Knight
 
-    attr_reader :symbol, :movelist
-    def initialize(player)
-        
-        if player == 1
-            @symbol = "\u2658"
-            @color = 'white'
-        elsif player == 2
+    attr_reader :symbol, :movelist, :color
+    attr_accessor :location
+    def initialize(color)
+        if color == 'white'
             @symbol = "\u265e"
-            @color = 'black'
+        elsif color == 'black'
+            @symbol = "\u2658"
         end
-        @movelist = [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]]
+        @color = color
+    end
+
+    def set_location(x,y)
+        @location = [x,y]
+    end
+
+    def movelist
+        moves = [[1,2],[2,1],[2,-1],[1,-2],[-1,-2],[-2,-1],[-2,1],[-1,2]]
     end
 
 end
 
 class Bishop
 
-    attr_reader :symbol, :movelist
-    def initialize(player)
+    attr_reader :symbol, :movelist, :color
+    attr_accessor :location
+    def initialize(color)
         
-        if player == 1
-            @symbol = "\u2657"
-            @color = 'white'
-        elsif player == 2
+        if color == 'white'
             @symbol = "\u265d"
-            @color = 'black'
+        elsif color == 'black'
+            @symbol = "\u2657"
         end
+        @color = color
+    end
+
+    def set_location(x,y)
+        @location = [x,y]
+    end
+
+    def movelist
+
     end
 
 end
 
 class Queen
 
-    attr_reader :symbol, :movelist
-    def initialize(player)
+    attr_reader :symbol, :movelist, :color
+    attr_accessor :location
+    def initialize(color)
         
-        if player == 1
-            @symbol = "\u2655"
-            @color = 'white'
-        elsif player == 2
+        if color == 'white'
             @symbol = "\u265b"
-            @color = 'black'
+        elsif color == 'black'
+            @symbol = "\u2655"
         end
+        @color = color
+    end
+
+    def set_location(x,y)
+        @location = [x,y]
+    end
+
+    def movelist
+        
     end
 
 end
 
 class King
 
-    attr_reader :symbol, :movelist
-    def initialize(player)
+    attr_reader :symbol, :movelist, :color
+    attr_accessor :location
+    def initialize(color)
         
-        if player == 1
+        if color == 'white'
             @symbol = "\u265a"
-            @color = 'white'
-        elsif player == 2
-            @symbol = "\u265a"
-            @color = 'black'
+        elsif color == 'black'
+            @symbol = "\u2654"
         end
+        @color = color
     end
+
+    def set_location(x,y)
+        @location = [x,y]
+    end
+
+    def movelist
+        moves = [[1,0],[1,-1],[0,-1],[-1,-1],[-1,-0],[-1,1],[0,1],[1,1]]
+    end
+
+end
+
+def axes_attack
+
+    attackx = @location[0]
+    attacky = @location[1]
+
+    attackx -= 1
+    if board.location(attackx, attacky).class == String
+        move_list << board.location(attackx, attacky)
+        
+    else
+    #    if board.location(attackx,attacky).color == 
+    end
+
+end
+
+def diagonal_attack
+
+    attackx = @location[0]
+    attacky = @location[1]
 
 end
