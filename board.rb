@@ -87,7 +87,9 @@ class Board
 
     def display_moves(moves)
         moves.each do |move|
-            @board[move[0]][move[1]] = 'X'
+            if @board[move[0]][move[1]].class == String
+                @board[move[0]][move[1]] = 'X'
+            end
         end
         show
     end
@@ -113,6 +115,20 @@ class Board
         puts "#{piece.class}: #{piece.location}"
     end
 
+    def collect_all_my_pieces(currently_playing)
+        players_pieces = []
+        @board.each_with_index do |column,x|
+            column.each_with_index do |row, y|
+                if @board[x][y].class != String
+                    if @board[x][y].color == currently_playing.color
+                        piece = @board[x][y]
+                        players_pieces << piece
+                    end
+                end
+            end
+        end
+        players_pieces
+    end
 end
 
 #board = Board.new

@@ -50,6 +50,7 @@ class Game
 =end
         5.times do
             legal_move(@currently_playing)
+            check?
             switch_turns
         end
     end
@@ -58,7 +59,11 @@ class Game
         move_completed = false
         until move_completed == true
             piece = select_a_piece
-            moves = generate_possible_moves(piece)
+            puts "Piece: #{piece.class}"
+            puts "Location: #{piece.location}"
+            moves = piece.generate_possible_moves(board)
+            board.display_moves(moves)
+            display_movelist(moves)
             location = select_a_location(moves)
             if location != 'cancel'
                 move_completed = true
@@ -66,6 +71,7 @@ class Game
                 if piece.class == Pawn
                     piece.has_moved
                 end
+                piece.update_movelist
             else
                 puts "Canceling..."
             end
@@ -92,41 +98,22 @@ class Game
         approved_selection = false
         until approved_selection == true
             coordinates = retrieve_appropriate_coordinates
-            unless @board.location(coordinates[0], coordinates[1]).class == String
-                if @board.location(coordinates[0], coordinates[1]).color == @currently_playing.color
-                    approved_selection = true
-                    selection = @board.location(coordinates[0], coordinates[1])
-                else
-                    puts "That's not your piece. Select again!"
-                end
+            if coordinates == 'cancel'
+                puts "You can't cancel your turn!"
             else
-                puts "There is no piece there. Select again!"
+                unless @board.location(coordinates[0], coordinates[1]).class == String
+                    if @board.location(coordinates[0], coordinates[1]).color == @currently_playing.color
+                        approved_selection = true
+                        selection = @board.location(coordinates[0], coordinates[1])
+                    else
+                        puts "That's not your piece. Select again!"
+                    end
+                else
+                    puts "There is no piece there. Select again!"
+                end
             end
         end
         selection
-    end
-
-    def generate_possible_moves(piece)
-        move_list = []
-        piece.movelist.each do |move|
-            new_move = []
-            new_x = (move[0] + piece.location[0])
-            new_y = (move[1] + piece.location[1])
-            unless new_x < 0 or new_x > 7 or new_y < 0 or new_y > 7
-                new_move = [new_x, new_y]
-                if board.location(new_x,new_y).class != String
-                    if board.location(new_x,new_y).color != @currently_playing.color
-                        move_list << new_move
-                    end
-                else
-                    move_list << new_move
-                end
-            end
-        end
-        board.display_moves(move_list)
-        puts "PIECE SELECTED: #{piece.class}"
-        display_movelist(move_list)
-        move_list
     end
 
     def select_a_location(move_list)
@@ -190,7 +177,9 @@ class Game
         entry = gets.chomp.downcase
         approved = false
         until approved == true or entry == 'cancel'
-            if entry == 'cancel'
+            if entry == 'exit'
+                exit
+            elsif entry == 'cancel'
                 entry
             elsif entry =~ /[a-h],[1-8]/
                 entry_split = entry.split(',')
@@ -220,7 +209,11 @@ class Game
     def display_movelist(move_list)
         puts "--MOVE LIST--"
         move_list.each do |move|
-            puts "   (#{int_to_letter(move[0])}, #{move[1] + 1})"
+            print "   (#{int_to_letter(move[0])}, #{move[1] + 1})"
+            if board.location(move[0],move[1]).class != String
+                print " (Attack: #{board.location(move[0],move[1]).class})"
+            end
+            puts
         end
         puts "-------------"
     end
@@ -229,6 +222,33 @@ class Game
         @currently_playing == @player1 ? @currently_playing = @player2 : @currently_playing = @player1
     end
 
+    def check?
+        @currently_playing == @player1 ? defender = @player2 : defender = @player1
+        players_pieces = board.collect_all_my_pieces(@currently_playing)
+        reachable_tiles = generate_moves_for_multiple_pieces(players_pieces)
+        puts reachable_tiles
+    end
+
+    def checkmate?
+
+    end
+
+    def generate_moves_for_multiple_pieces(pieces)
+        reachable_tiles = []
+        pieces.each_with_index do |piece, i|
+            puts "Piece: #{piece}: #{i}"
+        end
+        pieces.each_with_index do |piece, i|
+            moves = piece.generate_possible_moves(board)
+            puts "Piece: #{piece.class} #{i} Location: #{piece.location} Moves: #{moves}"
+            unless moves == []
+                moves.each do |move|
+                    reachable_tiles << move
+                end
+            end
+        end
+        reachable_tiles
+    end
 end
 
 game = Game.new
