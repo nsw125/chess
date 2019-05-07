@@ -57,9 +57,11 @@ class Board
 
     end
 
-    def value(x,y)
-        @board[x][y]
+    def set_value(value, location)
+        @board[location[0]][location[1]] = value
     end
+    
+
 
     def show
         row = 7
@@ -115,19 +117,53 @@ class Board
         puts "#{piece.class}: #{piece.location}"
     end
 
-    def collect_all_my_pieces(currently_playing)
+    def collect_all_my_pieces(currently_playing, checkmate = false)
         players_pieces = []
         @board.each_with_index do |column,x|
             column.each_with_index do |row, y|
                 if @board[x][y].class != String
                     if @board[x][y].color == currently_playing.color
                         piece = @board[x][y]
-                        players_pieces << piece
+                        unless piece.class == King and checkmate == true
+                            players_pieces << piece
+                        end
                     end
                 end
             end
         end
         players_pieces
+    end
+
+    def search_for_king(defender)
+        enemy_king = nil
+        @board.each_with_index do |column, x|
+            column.each_with_index do |row, y|
+                if @board[x][y].class == King
+                    if @board[x][y].color == defender.color
+                        enemy_king = @board[x][y]
+                        #puts "Found him! #{enemy_king}"
+                    end
+                end
+            end
+        end
+        enemy_king
+    end
+
+    def test_move?(piece, start, target)
+        location = @board[target[0]][target[1]]
+        @board[target[0]][target[1]] = piece
+        @board[start[0]][start[1]] = location
+
+        @board
+    end
+
+    def revert_move(piece, start, target)
+        location = @board[start[0]][start[1]]
+        @board[start[0]][start[1]] = piece
+        @board[target[0]][target[1]] = location
+
+        @board
+
     end
 end
 
